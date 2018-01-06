@@ -1,0 +1,28 @@
+---
+layout: page
+---
+
+{{ content }}
+
+{% assign show_collection = page.show_collection | default:"sponsors" %}
+{% assign ordered_projects = site[show_collection] | sort:"ord" | reverse %}
+
+{% assign projects_group_by = site.data.strings.date_formats.projects_group_by | default:"%Y" %}
+
+{% for project in ordered_projects %}
+  {% assign currentdate = project.date | date:projects_group_by %}
+
+  {% if currentdate != date %}
+    {% unless forloop.first %}</div>{% endunless %}
+
+    <div class="columns">
+    {% assign date = currentdate %}
+  {% endif %}
+
+  {% assign featured = page.featured | default:project.featured | default:page.big_project | default:project.big_project %}
+  <div class="column column-1-1">
+    {% include pro/spons-card.html project=project featured=featured %}
+  </div>
+
+  {% if forloop.last %}</div>{% endif %}
+{% endfor %}
